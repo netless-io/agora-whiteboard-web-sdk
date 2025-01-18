@@ -195,6 +195,7 @@ The following interfaces are involved:
     import { EStrokeType, ApplianceNames } from '@netless/appliance-plugin';
     room.setMemberState({currentApplianceName: ApplianceNames.laserPen, strokeType: EStrokeType.Normal});
     ```
+    ![Image](https://github.com/user-attachments/assets/3cd10c3a-b17b-4c01-b9d4-868c69116d96)
 2. Extended Teaching AIDS (Version >=1.1.1)
     ```js
     export enum EStrokeType { 
@@ -247,8 +248,55 @@ The following interfaces are involved:
     manager.mainView.setMemberState({ ... } as ExtendMemberState);
     appliance.setMemberState({ ... } as ExtendMemberState);
     ```
-3. Split screen display Elements (little whiteboard featrue), need to combine '@netless/app-little-white-board' (Version >=1.1.3)
+    - Set stroke type:
+    ```js
+    // Solid line
+    setMemberState({strokeType: EStrokeType.Normal });
+    // Line with pen edge
+    setMemberState({strokeType: EStrokeType.Stroke });
+    // Dotted line
+    setMemberState({strokeType: EStrokeType.Dotted });
+    // Long dotted line
+    setMemberState({strokeType: EStrokeType.LongDotted });
+    ```
+    ![Image](https://github.com/user-attachments/assets/fabe4ea7-db42-4c31-a751-10df4dd82807)
+    - Set stroke and shape border opacity (marker):
+    ```js
+    setMemberState({strokeOpacity: 0.5 });
+    ```
+    ![Image](https://github.com/user-attachments/assets/1aac265d-9643-4858-bcc6-a43af94ed73e)
+    - Set text color, text opacity, text background color, text background opacity
+    ```js
+    setMemberState({textOpacity: 0.5, textBgOpacity: 0.5, textBgColor:[0, 0, 0]});
+    ```
+    ![Image](https://github.com/user-attachments/assets/b59a9864-8f3f-4700-abee-2ccbe264cc86)
+    - Set shape fill color and fill opacity
+    ```js
+    setMemberState({fillOpacity: 0.5, fillColor:[0, 0, 0]});
+    ```
+    ![Image](https://github.com/user-attachments/assets/468b930c-3db0-4355-87be-6b55af764799)
+    - Custom regular polygon
+    ```js
+    // 正五边形
+    setMemberState({currentApplianceName: ApplianceNames.shape, shapeType: ShapeType.Polygon, vertices: 5});
+    ```
+    ![Image](https://github.com/user-attachments/assets/f34540f5-d779-42f9-bb8a-91250fcfe4e1)
+    - Custom star shape
+    ```js
+    // 胖六角星
+    setMemberState({currentApplianceName: ApplianceNames.shape, shapeType: ShapeType.Star, vertices: 12, innerVerticeStep: 2, innerRatio: 0.8});
+    ```
+    ![Image](https://github.com/user-attachments/assets/49215362-722a-47d3-998f-cc933a2b5126)
+    - Customize the placement of the speechballoon
+    ```js
+    // 左下角提示框
+    setMemberState({currentApplianceName: ApplianceNames.shape, shapeType: ShapeType.SpeechBalloon, placement: 'bottomLeft'});
+    ```
+    ![Image](https://github.com/user-attachments/assets/6d52dedf-ca21-406d-a353-d801273b98bf)
 
+
+3. Split screen display Elements (little whiteboard featrue), need to combine '@netless/app-little-white-board' (Version >=1.1.3)
+    ![Image](https://github.com/user-attachments/assets/20810ea6-7d85-4e72-b75f-185599fffaf8)
 4. Minimap function (Version >=1.1.6)
     ```js
     /** Create a minimap
@@ -259,6 +307,7 @@ The following interfaces are involved:
     /** Destroy minimap */
     destroyMiniMap(viewId: string): Promise<void>;
     ```
+    ![Image](https://github.com/user-attachments/assets/8888dc2f-ba66-4807-aa12-16530b3b8a3c)
 5. Filter Elements (Version >=1.1.6)
     ```js
     /** Filter Elements
@@ -276,6 +325,7 @@ The following interfaces are involved:
      */
     cancelFilterRender(viewId: string, isSync?:boolean): void;
     ```
+    ![Image](https://github.com/user-attachments/assets/7952ee1d-4f9c-4e86-802a-bac8e4ae6a51)
 6. Handwriting graphics automatic association function: 'autoDraw' (version >=1.1.7)
     ```js
     export type AutoDrawOptions = {
@@ -295,11 +345,12 @@ The following interfaces are involved:
     });
     plugin.usePlugin(autoDrawPlugin);
     ```
+    ![Image](https://github.com/user-attachments/assets/c388691c-ae72-44ec-bbb7-e92c3a73c9c7)
 ### Configure parameters 
 ``getInstance(wm: WindowManager, adaptor: ApplianceAdaptor)`` 
 - wm: WindowManager\room\player. In multi-window mode, you pass WindowManager, and in single-window mode, you pass room or player(whiteboard playback mode). 
 - adaptor: configures the adapter. 
-    - options: ``AppliancePluginOptions``; The cdn addresses of both workers must be configured. 
+    - ``options: AppliancePluginOptions``; The cdn addresses of both workers must be configured. 
         ```js 
             export type AppliancePluginOptions = { 
                 /** cdn Configuration item */ 
@@ -308,9 +359,16 @@ The following interfaces are involved:
                 syncOpt? : SyncOpt; 
                 /** Canvas configuration item */ 
                 canvasOpt? : CanvasOpt; 
+                /** stroke width range */
+                strokeWidth?: {
+                    min: number,
+                    max: number,
+                }
             } 
         ```
-    - cursorAdapter? : ``CursorAdapter``; This parameter is optional. In single whiteboard mode, customize the mouse style.
+    - ``cursorAdapter? : CursorAdapter``; This parameter is optional. In single whiteboard mode, customize the mouse style.
+    - ``logger?: Logger``; This parameter is optional. Configure the log printer object. The default output is on the local console. If logs need to be uploaded to the specified server, you need to manually configure the configuration.
+        >If you need to upload the log to the whiteboard log server, configure the `room.logger` to this item。
 
 ### Front-end debugging introduction 
 During the interconnection process, if you want to understand and track the internal status of the plug-in, you can view the internal data through the following console commands. 

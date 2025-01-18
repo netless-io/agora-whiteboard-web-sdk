@@ -120,7 +120,7 @@ Install `@netless/fastboard-react`, use the `<Fastboard />` component.
 npm add <b>@netless/fastboard-react</b> @netless/window-manager white-web-sdk react react-dom @netless/appliance-plugin
 </pre>
 
-> **注意：** The `@netless/appliance-plugin` needs to be installed only when [Use performance](#performance) is enabled.
+> **Note:** The `@netless/appliance-plugin` needs to be installed only when [Use performance](#performance) is enabled.
 
 
 #### Full package
